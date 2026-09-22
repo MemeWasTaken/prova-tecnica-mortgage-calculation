@@ -15,6 +15,13 @@ export function saveCalculation(entry) {
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 }
 
+export function addDummyEntries(entries) {
+  const history = getHistory();
+  const withIds = entries.map((entry) => ({ id: crypto.randomUUID(), ...entry }));
+  localStorage.setItem(HISTORY_KEY, JSON.stringify([...withIds, ...history]));
+  return withIds;
+}
+
 export function removeCalculation(id) {
   const history = getHistory().filter((entry) => entry.id !== id);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));

@@ -4,7 +4,8 @@ import HistoryToolbar from '../components/history/HistoryToolbar';
 import SimulationTable from '../components/history/SimulationTable';
 import ClearAllModal from '../components/history/ClearAllModal';
 import ComparisonPanel from '../components/history/ComparisonPanel';
-import { clearHistory, getHistory, removeCalculation } from '../utils/storage';
+import { addDummyEntries, clearHistory, getHistory, removeCalculation } from '../utils/storage';
+import { generateDummyEntries } from '../utils/dummyData';
 
 export default function HistoryPage() {
   const [history, setHistory] = useState(() => getHistory());
@@ -35,6 +36,11 @@ export default function HistoryPage() {
   };
 
   const handleDeselect = () => setSelectedIds([]);
+
+  const handleAddDummy = () => {
+    const savedEntries = addDummyEntries(generateDummyEntries());
+    setHistory((current) => [...savedEntries, ...current]);
+  };
 
   const compareEntries = selectedIds
     .map((id) => history.find((entry) => entry.id === id))
@@ -71,6 +77,13 @@ export default function HistoryPage() {
             <p className="text-sm text-gray-500">
               Run a calculation and save it to start building your history.
             </p>
+            <button
+              type="button"
+              onClick={handleAddDummy}
+              className="mt-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm font-normal text-gray-600 hover:bg-gray-50"
+            >
+              + Add 10 dummy entries
+            </button>
           </div>
         ) : (
           <>
@@ -80,6 +93,7 @@ export default function HistoryPage() {
               onClearAll={handleClearAllClick}
               onDeselect={handleDeselect}
               onCompare={handleCompareClick}
+              onAddDummy={handleAddDummy}
             />
             {isCompareOpen && compareEntries.length > 1 && (
               <ComparisonPanel entries={compareEntries} onClose={() => setIsCompareOpen(false)} />
