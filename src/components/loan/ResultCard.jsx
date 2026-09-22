@@ -1,4 +1,3 @@
-import { calculateMortgage } from '../../utils/mortgage';
 import { formatCurrency } from '../../utils/format';
 
 export default function ResultCard({ result }) {
@@ -14,13 +13,8 @@ export default function ResultCard({ result }) {
     );
   }
 
-  const { amount, rate, termYears, paymentsPerYear, rateType } = result;
-  const { installment, totalPayment, totalInterest } = calculateMortgage({
-    amount,
-    rate,
-    termYears,
-    paymentsPerYear,
-  });
+  const { amount, rate, termYears, paymentsPerYear, rateType, installment, totalPayment, totalInterest } =
+    result;
 
   return (
     <div>

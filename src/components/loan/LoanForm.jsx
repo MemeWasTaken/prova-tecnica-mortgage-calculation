@@ -14,7 +14,7 @@ const RATE_TYPES = [
   { label: 'Variable', value: 'Variable' },
 ];
 
-export default function LoanForm({ onCalculate, hasResult }) {
+export default function LoanForm({ onCalculate, onSave, hasResult }) {
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
   const [termYears, setTermYears] = useState(20);
@@ -191,7 +191,10 @@ export default function LoanForm({ onCalculate, hasResult }) {
         {hasResult && (
           <button
             type="button"
-            onClick={() => setIsSaved(true)}
+            onClick={() => {
+              onSave();
+              setIsSaved(true);
+            }}
             disabled={isSaved}
             aria-pressed={isSaved}
             className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-sm font-semibold ${
