@@ -194,7 +194,7 @@ export default function LoanForm({ onCalculate, hasResult }) {
             onClick={() => setIsSaved(true)}
             disabled={isSaved}
             aria-pressed={isSaved}
-            className={`rounded-md border px-4 py-2.5 text-sm font-semibold ${
+            className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-sm font-semibold ${
               isSaved
                 ? 'border-green-300 bg-green-50 text-green-600'
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
