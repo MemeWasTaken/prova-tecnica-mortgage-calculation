@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import Container from './Container';
+import LoanForm from './loan/LoanForm';
+import ResultCard from './loan/ResultCard';
 
 export default function Main() {
+  const [result, setResult] = useState(null);
+
   return (
     <main className="flex-1">
       <Container className="py-10">
@@ -9,13 +14,9 @@ export default function Main() {
           Enter your loan parameters below to estimate your repayment schedule.
         </p>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <div className="flex min-h-64 items-center justify-center rounded-lg border border-dashed border-gray-300 text-sm text-gray-400">
-            Form placeholder
-          </div>
-          <div className="flex min-h-64 items-center justify-center rounded-lg border border-dashed border-gray-300 text-sm text-gray-400">
-            Result placeholder
-          </div>
+        <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">
+          <LoanForm onCalculate={setResult} hasResult={Boolean(result)} />
+          <ResultCard result={result} />
         </div>
       </Container>
     </main>
