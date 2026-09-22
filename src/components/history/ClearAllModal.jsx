@@ -4,7 +4,7 @@ export default function ClearAllModal({ isOpen, onClose, onConfirm }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-80 rounded-xl bg-white p-6 shadow-lg sm:w-96">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -24,11 +24,10 @@ export default function ClearAllModal({ isOpen, onClose, onConfirm }) {
         </div>
 
         <h2 className="mt-4 font-semibold text-gray-900">Clear all simulations?</h2>
-        <p className="mt-2 text-sm text-gray-500">
-          This will permanently delete all saved simulations from your history.
-          <br />
-          <span className="font-semibold text-gray-700">This action cannot be undone.</span>
-        </p>
+        <div className="mt-2 text-sm text-gray-500">
+          <p>This will permanently delete all saved simulations from your history.</p>
+          <p className="font-semibold text-gray-700 mt-2">This action cannot be undone.</p>
+        </div>
 
         <div className="mt-6 flex gap-3">
           <button
