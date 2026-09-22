@@ -2,25 +2,19 @@ import { useState } from 'react';
 import FormField from './FormField';
 import ToggleGroup from './ToggleGroup';
 import SegmentedToggle from './SegmentedToggle';
-
-const PAYMENT_FREQUENCIES = [
-  { label: 'Monthly', value: 12 },
-  { label: 'Quarterly', value: 4 },
-  { label: 'Semi-annual', value: 2 },
-  { label: 'Annual', value: 1 },
-];
-
-const RATE_TYPES = [
-  { label: 'Fixed', value: 'Fixed' },
-  { label: 'Variable', value: 'Variable' },
-];
+import {
+  PAYMENT_FREQUENCIES,
+  RATE_TYPES,
+  LOAN_CONSTRAINTS,
+  LOAN_DEFAULTS,
+} from '../../config/loanDefaults';
 
 export default function LoanForm({ onCalculate, onSave, hasResult }) {
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
-  const [termYears, setTermYears] = useState(20);
-  const [paymentsPerYear, setPaymentsPerYear] = useState(12);
-  const [rateType, setRateType] = useState('Fixed');
+  const [termYears, setTermYears] = useState(LOAN_DEFAULTS.termYears);
+  const [paymentsPerYear, setPaymentsPerYear] = useState(LOAN_DEFAULTS.paymentsPerYear);
+  const [rateType, setRateType] = useState(LOAN_DEFAULTS.rateType);
   const [errors, setErrors] = useState({});
   const [isSaved, setIsSaved] = useState(false);
 
@@ -81,7 +75,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
           <input
             id="amount"
             type="number"
-            min="0"
+            min={LOAN_CONSTRAINTS.amount.min}
             value={amount}
             onChange={(e) => handleFieldChange(setAmount)(e.target.value)}
             placeholder="200,000"
@@ -103,11 +97,11 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
           <input
             id="rate"
             type="number"
-            min="0"
-            step="0.01"
+            min={LOAN_CONSTRAINTS.rate.min}
+            step={LOAN_CONSTRAINTS.rate.step}
             value={rate}
             onChange={(e) => handleFieldChange(setRate)(e.target.value)}
-            placeholder="3.75"
+            placeholder={String(LOAN_CONSTRAINTS.rate.placeholder)}
             required
             aria-required="true"
             aria-invalid={Boolean(errors.rate)}
@@ -123,12 +117,12 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
           <input
             id="term"
             type="range"
-            min="1"
-            max="40"
+            min={LOAN_CONSTRAINTS.termYears.min}
+            max={LOAN_CONSTRAINTS.termYears.max}
             value={termYears}
             onChange={(e) => handleFieldChange(setTermYears)(Number(e.target.value))}
-            aria-valuemin={1}
-            aria-valuemax={40}
+            aria-valuemin={LOAN_CONSTRAINTS.termYears.min}
+            aria-valuemax={LOAN_CONSTRAINTS.termYears.max}
             aria-valuenow={termYears}
             aria-valuetext={`${termYears} years`}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-600"
@@ -136,13 +130,16 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
           <div className="flex w-16 shrink-0 items-center justify-center gap-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm">
             <input
               type="number"
-              min="1"
-              max="40"
+              min={LOAN_CONSTRAINTS.termYears.min}
+              max={LOAN_CONSTRAINTS.termYears.max}
               value={termYears}
               onChange={(e) => {
                 const { value } = e.target;
                 if (value === '') return;
-                const clamped = Math.min(40, Math.max(1, Number(value)));
+                const clamped = Math.min(
+                  LOAN_CONSTRAINTS.termYears.max,
+                  Math.max(LOAN_CONSTRAINTS.termYears.min, Number(value)),
+                );
                 handleFieldChange(setTermYears)(clamped);
               }}
               aria-label="Loan term in years"
@@ -152,8 +149,8 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
           </div>
         </div>
         <div className="mt-1 flex justify-between text-xs text-gray-400">
-          <span>1 yr</span>
-          <span>40 yr</span>
+          <span>{LOAN_CONSTRAINTS.termYears.min} yr</span>
+          <span>{LOAN_CONSTRAINTS.termYears.max} yr</span>
         </div>
       </FormField>
 
