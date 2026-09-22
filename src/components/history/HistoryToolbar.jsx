@@ -32,7 +32,7 @@ export default function HistoryToolbar({ count, selectedCount, onClearAll, onDes
           <button
             type="button"
             onClick={onClearAll}
-            className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-normal text-red-500 hover:bg-red-50"
+            className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-normal text-red-500"
           >
             Clear all
           </button>

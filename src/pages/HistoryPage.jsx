@@ -2,16 +2,21 @@ import { useState } from 'react';
 import Container from '../components/Container';
 import HistoryToolbar from '../components/history/HistoryToolbar';
 import SimulationTable from '../components/history/SimulationTable';
+import ClearAllModal from '../components/history/ClearAllModal';
 import { clearHistory, getHistory, removeCalculation } from '../utils/storage';
 
 export default function HistoryPage() {
   const [history, setHistory] = useState(() => getHistory());
   const [selectedIds, setSelectedIds] = useState([]);
+  const [isClearAllOpen, setIsClearAllOpen] = useState(false);
 
-  const handleClearAll = () => {
+  const handleClearAllClick = () => setIsClearAllOpen(true);
+
+  const handleConfirmClearAll = () => {
     clearHistory();
     setHistory([]);
     setSelectedIds([]);
+    setIsClearAllOpen(false);
   };
 
   const handleDelete = (id) => {
@@ -65,7 +70,7 @@ export default function HistoryPage() {
             <HistoryToolbar
               count={history.length}
               selectedCount={selectedIds.length}
-              onClearAll={handleClearAll}
+              onClearAll={handleClearAllClick}
               onDeselect={handleDeselect}
             />
             <SimulationTable
@@ -77,6 +82,12 @@ export default function HistoryPage() {
           </>
         )}
       </Container>
+
+      <ClearAllModal
+        isOpen={isClearAllOpen}
+        onClose={() => setIsClearAllOpen(false)}
+        onConfirm={handleConfirmClearAll}
+      />
     </main>
   );
 }
