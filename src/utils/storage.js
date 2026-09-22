@@ -15,3 +15,11 @@ export function saveCalculation(entry) {
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 }
 
+export function removeCalculation(id) {
+  const history = getHistory().filter((entry) => entry.id !== id);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+export function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+}
