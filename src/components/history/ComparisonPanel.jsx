@@ -48,23 +48,33 @@ export default function ComparisonPanel({ entries, onClose }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <tr key={row.label} className="border-t border-gray-100">
-                <td className="sticky left-0 z-10 bg-white px-4 py-3 whitespace-nowrap text-gray-500">
-                  {row.label}
-                </td>
-                {entries.map((entry) => (
+            {rows.map((row, index) => {
+              const isOdd = index % 2 === 1;
+              return (
+                <tr
+                  key={row.label}
+                  className={`border-t border-gray-100 ${isOdd ? 'bg-[#F8F9FB]' : 'bg-white'}`}
+                >
                   <td
-                    key={entry.id}
-                    className={`px-4 py-3 whitespace-nowrap ${
-                      row.highlight ? 'font-semibold text-indigo-600' : 'text-gray-700'
+                    className={`sticky left-0 z-10 px-4 py-3 whitespace-nowrap text-gray-500 ${
+                      isOdd ? 'bg-[#F8F9FB]' : 'bg-white'
                     }`}
                   >
-                    {row.render(entry)}
+                    {row.label}
                   </td>
-                ))}
-              </tr>
-            ))}
+                  {entries.map((entry) => (
+                    <td
+                      key={entry.id}
+                      className={`px-4 py-3 whitespace-nowrap ${
+                        row.highlight ? 'font-semibold text-indigo-600' : 'text-gray-700'
+                      }`}
+                    >
+                      {row.render(entry)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
