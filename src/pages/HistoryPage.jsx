@@ -3,14 +3,17 @@ import Container from '../components/Container';
 import HistoryToolbar from '../components/history/HistoryToolbar';
 import SimulationTable from '../components/history/SimulationTable';
 import ClearAllModal from '../components/history/ClearAllModal';
+import ComparisonPanel from '../components/history/ComparisonPanel';
 import { clearHistory, getHistory, removeCalculation } from '../utils/storage';
 
 export default function HistoryPage() {
   const [history, setHistory] = useState(() => getHistory());
   const [selectedIds, setSelectedIds] = useState([]);
   const [isClearAllOpen, setIsClearAllOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   const handleClearAllClick = () => setIsClearAllOpen(true);
+  const handleCompareClick = () => setIsCompareOpen(true);
 
   const handleConfirmClearAll = () => {
     clearHistory();
@@ -32,6 +35,10 @@ export default function HistoryPage() {
   };
 
   const handleDeselect = () => setSelectedIds([]);
+
+  const compareEntries = selectedIds
+    .map((id) => history.find((entry) => entry.id === id))
+    .filter(Boolean);
 
   return (
     <main className="flex-1">
@@ -72,7 +79,11 @@ export default function HistoryPage() {
               selectedCount={selectedIds.length}
               onClearAll={handleClearAllClick}
               onDeselect={handleDeselect}
+              onCompare={handleCompareClick}
             />
+            {isCompareOpen && compareEntries.length > 1 && (
+              <ComparisonPanel entries={compareEntries} onClose={() => setIsCompareOpen(false)} />
+            )}
             <SimulationTable
               history={history}
               selectedIds={selectedIds}

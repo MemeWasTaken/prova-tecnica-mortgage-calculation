@@ -21,7 +21,7 @@ export default function ResultCard({ result }) {
       <div className="rounded-lg bg-indigo-600 p-6 text-white">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium tracking-wide text-indigo-100 uppercase">
-            Estimated monthly installment
+            Estimated installment
           </span>
           <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold uppercase">
             {rateType}

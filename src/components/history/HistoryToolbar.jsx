@@ -1,4 +1,10 @@
-export default function HistoryToolbar({ count, selectedCount, onClearAll, onDeselect }) {
+export default function HistoryToolbar({
+  count,
+  selectedCount,
+  onClearAll,
+  onDeselect,
+  onCompare,
+}) {
   return (
     <div className="mt-8 rounded-lg border border-gray-100 bg-white px-4 py-3 shadow-xs">
       <div className="flex items-center justify-between">
@@ -15,6 +21,7 @@ export default function HistoryToolbar({ count, selectedCount, onClearAll, onDes
           {selectedCount > 1 && (
             <button
               type="button"
+              onClick={onCompare}
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-normal text-white hover:bg-indigo-700"
             >
               Compare {selectedCount}
