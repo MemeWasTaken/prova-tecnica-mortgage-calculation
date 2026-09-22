@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import Container from './Container';
 
-const TABS = ['Calculator', 'History'];
+const TABS = [
+  { label: 'Calculator', path: '/' },
+  { label: 'History', path: '/history' },
+];
 
 export default function Navbar() {
-  const [activeTab, setActiveTab] = useState(TABS[0]);
+  const { pathname } = useLocation();
 
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -18,18 +21,18 @@ export default function Navbar() {
 
           <nav className="flex items-center gap-1">
             {TABS.map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
+              <Link
+                key={tab.path}
+                to={tab.path}
+                aria-current={pathname === tab.path ? 'page' : undefined}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  activeTab === tab
+                  pathname === tab.path
                     ? 'bg-indigo-50 text-indigo-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {tab}
-              </button>
+                {tab.label}
+              </Link>
             ))}
           </nav>
         </div>
