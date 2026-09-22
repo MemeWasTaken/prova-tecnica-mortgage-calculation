@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import FormField from './FormField';
 import ToggleGroup from './ToggleGroup';
+import SegmentedToggle from './SegmentedToggle';
 
 const PAYMENT_FREQUENCIES = [
   { label: 'Monthly', value: 12 },
@@ -172,7 +173,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
         <span className="ml-1 text-gray-400">/yr</span>
       </div>
 
-      <ToggleGroup
+      <SegmentedToggle
         label="Rate type"
         labelId="rate-type-label"
         options={RATE_TYPES}
