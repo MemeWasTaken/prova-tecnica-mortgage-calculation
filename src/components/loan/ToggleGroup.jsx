@@ -16,7 +16,7 @@ export default function ToggleGroup({ label, required, labelId, options, value, 
               className={`rounded-md border px-3 py-2 text-sm font-medium ${
                 selected
                   ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
-                  : 'border-gray-300 text-gray-600'
+                  : 'border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               {option.label}
