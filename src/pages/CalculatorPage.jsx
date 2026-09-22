@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Container from './Container';
-import LoanForm from './loan/LoanForm';
-import ResultCard from './loan/ResultCard';
+import Container from '../components/Container';
+import LoanForm from '../components/loan/LoanForm';
+import ResultCard from '../components/loan/ResultCard';
 
-export default function Main() {
+export default function CalculatorPage() {
   const [result, setResult] = useState(null);
 
   return (
