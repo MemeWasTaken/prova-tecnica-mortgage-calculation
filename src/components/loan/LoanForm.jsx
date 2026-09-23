@@ -121,10 +121,6 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
             max={LOAN_CONSTRAINTS.termYears.max}
             value={termYears}
             onChange={(e) => handleFieldChange(setTermYears)(Number(e.target.value))}
-            aria-valuemin={LOAN_CONSTRAINTS.termYears.min}
-            aria-valuemax={LOAN_CONSTRAINTS.termYears.max}
-            aria-valuenow={termYears}
-            aria-valuetext={`${termYears} years`}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-600"
           />
           <div className="flex w-16 shrink-0 items-center justify-center gap-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm">
@@ -142,10 +138,10 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
                 );
                 handleFieldChange(setTermYears)(clamped);
               }}
-              aria-label="Loan term in years"
+              aria-labelledby="term-label term-unit"
               className="w-6 bg-transparent text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
-            <span className="text-gray-400">yr</span>
+            <span id="term-unit" className="text-gray-400">yr</span>
           </div>
         </div>
         <div className="mt-1 flex justify-between text-xs text-gray-400">
@@ -194,7 +190,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
               setIsSaved(true);
             }}
             disabled={isSaved}
-            aria-pressed={isSaved}
+            aria-live="polite"
             className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-sm font-semibold ${
               isSaved
                 ? 'border-green-300 bg-green-50 text-green-600'
