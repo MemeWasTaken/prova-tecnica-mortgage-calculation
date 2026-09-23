@@ -6,20 +6,47 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { calculateMortgage } from '../utils/mortgage';
 import { saveCalculation } from '../utils/storage';
 
+/**
+ * Home page: the mortgage calculator.
+ *
+ * Composes `LoanForm` (input) and `ResultCard` (output) and owns the
+ * calculation `result` state. The two components do not know each other: the
+ * form reports its values through callbacks and this page computes and stores
+ * the result, then passes it down to the card.
+ *
+ * `result` is `null` until a valid calculation is made, otherwise it holds the
+ * form values plus `installment`, `totalPayment` and `totalInterest`.
+ *
+ * Layout: form and result are side by side from the `lg` breakpoint (1024px)
+ * and stacked below it.
+ */
 export default function CalculatorPage() {
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
+  // Must match the `lg:` breakpoint used for the grid layout below.
   const isSideBySide = useMediaQuery('(min-width: 1024px)');
 
+  // Effect Event: reads the latest `isSideBySide` without making the effect
+  // below re-run when the viewport is resized.
   const scrollToResult = useEffectEvent(() => {
+    // When the result is already visible next to the form there is no need to scroll.
     if (isSideBySide) return;
     resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
+  // On stacked (mobile/tablet) layouts the result appears below the fold, so
+  // bring it into view whenever a new result is produced.
   useEffect(() => {
     if (result) scrollToResult();
   }, [result]);
 
+  /**
+   * Called by `LoanForm` when the user submits the form.
+   *
+   * @param {{ amount: number, rate: number, termYears: number,
+   *   paymentsPerYear: number, rateType: string } | null} formValues
+   *   Validated form values, or a falsy value to clear the current result.
+   */
   const handleCalculate = (formValues) => {
     if (!formValues) {
       setResult(null);
@@ -30,6 +57,11 @@ export default function CalculatorPage() {
     setResult({ ...formValues, installment, totalPayment, totalInterest });
   };
 
+  /**
+   * Called by `LoanForm` when the user saves the current calculation.
+   * Converts the result into the history entry shape (see `generateDummyEntries`)
+   * and persists it. Does nothing if there is no result yet.
+   */
   const handleSave = () => {
     if (!result) return;
 

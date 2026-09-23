@@ -1,5 +1,30 @@
 import { formatCurrency } from '../../utils/format';
 
+/**
+ * Displays the outcome of a mortgage calculation.
+ *
+ * Three states:
+ *   - No result: a dashed placeholder inviting the user to run a calculation.
+ *     It is hidden below the `sm` breakpoint, where an empty box would only
+ *     add noise on small screens.
+ *   - Result: a highlighted card with the estimated installment, plus the
+ *     input parameters and the total payment and total interest.
+ *   - Variable rate: the result is followed by a warning that the estimate
+ *     may change with market rates.
+ *
+ * @param {Object} props
+ * @param {{
+ *   amount: number,
+ *   rate: number,
+ *   termYears: number,
+ *   paymentsPerYear: number,
+ *   rateType: string,
+ *   installment: number,
+ *   totalPayment: number,
+ *   totalInterest: number,
+ * } | null} props.result - Calculation result (form values plus computed
+ *   figures, see `CalculatorPage`), or `null` when there is none.
+ */
 export default function ResultCard({ result }) {
   if (!result) {
     return (
@@ -13,6 +38,7 @@ export default function ResultCard({ result }) {
     );
   }
 
+  // Form inputs echoed back, plus the computed figures.
   const { amount, rate, termYears, paymentsPerYear, rateType, installment, totalPayment, totalInterest } =
     result;
 
@@ -58,6 +84,7 @@ export default function ResultCard({ result }) {
         </div>
       </div>
 
+      {/* Variable-rate estimates are not reliable long term: warn the user. */}
       {rateType === 'Variable' && (
         <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
           ⚠️ Variable rate estimates are indicative only. Your installment may change as market

@@ -1,6 +1,21 @@
 import { COMPARISON_ROWS } from '../../config/comparisonRows';
 import ComparisonHeader from './ComparisonHeader';
 
+/**
+ * Comparison of two or more simulations as a list of cards (mobile).
+ * The desktop counterpart is `ComparisonPanel`.
+ *
+ * Content is grouped by parameter (defined in `COMPARISON_ROWS`): each card
+ * shows one parameter and, below it, the value for every simulation, labelled
+ * "Sim #n" following the order of `entries`. Reading a single parameter across
+ * simulations is easier than scrolling a wide table on a small screen.
+ *
+ * Renders nothing with fewer than two entries, as there is nothing to compare.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.entries - History entries to compare (2 or more).
+ * @param {() => void} props.onClose - Called when the user closes the comparison.
+ */
 export default function ComparisonCardList({ entries, onClose }) {
   if (entries.length < 2) return null;
 

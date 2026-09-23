@@ -1,3 +1,10 @@
+/**
+ * Title bar of the comparison views, with a close button.
+ * Shared by `ComparisonPanel` (table) and `ComparisonCardList` (cards).
+ *
+ * @param {Object} props
+ * @param {() => void} props.onClose - Called when the close button is clicked.
+ */
 export default function ComparisonHeader({ onClose }) {
   return (
     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">

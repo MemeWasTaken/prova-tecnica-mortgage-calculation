@@ -1,3 +1,24 @@
+/**
+ * Single-choice selector rendered as a segmented control: options sit side by
+ * side in one row inside a rounded container, and the selected one is
+ * highlighted. Best suited for a few short options (e.g. Fixed / Variable);
+ * use `ToggleGroup` for a grid of buttons.
+ *
+ * Implements the ARIA radio group pattern (`radiogroup` labelled by
+ * `labelId`, one `role="radio"` button per option with `aria-checked`). As in
+ * `ToggleGroup`, arrow-key navigation is not implemented.
+ *
+ * @param {Object} props
+ * @param {string} props.label - Text of the group label.
+ * @param {boolean} [props.required] - Shows a required asterisk (visual only).
+ * @param {string} props.labelId - Id given to the label, referenced by `aria-labelledby`.
+ * @param {Array<{ label: string, value: string | number }>} props.options -
+ *   Available choices. `label` is displayed and also used as React key, so
+ *   labels must be unique.
+ * @param {string | number} props.value - Value of the currently selected option.
+ * @param {(value: string | number) => void} props.onChange - Called with the
+ *   `value` of the clicked option.
+ */
 export default function SegmentedToggle({ label, required, labelId, options, value, onChange }) {
   return (
     <div className="mt-4">

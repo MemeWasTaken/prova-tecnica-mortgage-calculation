@@ -9,12 +9,49 @@ import {
   LOAN_DEFAULTS,
 } from '../../config/loanDefaults';
 
+/**
+ * Loan parameters form: collects the inputs, validates them and reports the
+ * result to the parent through callbacks.
+ *
+ * Fields: loan amount, annual interest rate, term (slider synchronized with
+ * a numeric input), payments per year and rate type. The form is a
+ * controlled component: values live in local state and the parent only
+ * receives them on submit.
+ *
+ * Behavior:
+ *   - Submit validates `amount` (> 0) and `rate` (>= 0). On errors they are
+ *     shown next to the fields and `onCalculate(null)` is called; otherwise
+ *     `onCalculate` receives the parsed values.
+ *   - Any field change calls `onCalculate(null)` and resets the "saved"
+ *     state: the displayed result would be stale, so it is cleared until the
+ *     user calculates again.
+ *   - The Save button only appears when a result exists (`hasResult`) and is
+ *     disabled after a click, until the next change or submit.
+ *   - The form uses `noValidate`: validation is done in JS with custom
+ *     messages instead of the browser's native bubbles.
+ *
+ * @param {Object} props
+ * @param {(values: {
+ *   amount: number,
+ *   rate: number,
+ *   termYears: number,
+ *   paymentsPerYear: number,
+ *   rateType: string,
+ * } | null) => void} props.onCalculate - Receives the validated values, or
+ *   `null` to clear the current result.
+ * @param {() => void} props.onSave - Called when the user clicks Save.
+ * @param {boolean} props.hasResult - Whether a result is currently displayed
+ *   (controls the visibility of the Save button).
+ */
 export default function LoanForm({ onCalculate, onSave, hasResult }) {
+  // Amount and rate are kept as strings so the inputs can be empty; they are
+  // converted to numbers on submit.
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
   const [termYears, setTermYears] = useState(LOAN_DEFAULTS.termYears);
   const [paymentsPerYear, setPaymentsPerYear] = useState(LOAN_DEFAULTS.paymentsPerYear);
   const [rateType, setRateType] = useState(LOAN_DEFAULTS.rateType);
+  // Validation messages keyed by field name (`amount`, `rate`).
   const [errors, setErrors] = useState({});
   const [isSaved, setIsSaved] = useState(false);
 
@@ -48,6 +85,8 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
     });
   };
 
+  // Builds a change handler for a field: updates its state and invalidates the
+  // current result, which no longer matches the inputs.
   const handleFieldChange = (setter) => (value) => {
     setter(value);
     setIsSaved(false);
@@ -124,6 +163,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
         </FormField>
       </div>
 
+      {/* Term: slider and numeric input edit the same value. */}
       <FormField label="Loan term" htmlFor="term" required>
         <div className="mt-2 flex items-center gap-4">
           <input
@@ -143,7 +183,9 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
               value={termYears}
               onChange={(e) => {
                 const { value } = e.target;
+                // Ignore an empty input so the user can retype the number.
                 if (value === '') return;
+                // Keep the typed value inside the allowed term range.
                 const clamped = Math.min(
                   LOAN_CONSTRAINTS.termYears.max,
                   Math.max(LOAN_CONSTRAINTS.termYears.min, Number(value)),
@@ -170,6 +212,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
         value={paymentsPerYear}
         onChange={handleFieldChange(setPaymentsPerYear)}
       />
+      {/* Read-only recap of the chosen frequency, announced when it changes. */}
       <div
         aria-live="polite"
         className="mt-2 flex items-center justify-end rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-500"

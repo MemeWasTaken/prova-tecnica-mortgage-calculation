@@ -1,5 +1,18 @@
 import Modal from '../Modal';
 
+/**
+ * Confirmation dialog shown before deleting the whole history.
+ *
+ * Built on the generic `Modal`, so it inherits focus trap, Escape and
+ * backdrop-click closing. The dialog is named by its title (`clear-all-title`).
+ * Nothing is deleted here: confirming only calls `onConfirm`, and the parent
+ * performs the deletion.
+ *
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Whether the dialog is visible.
+ * @param {() => void} props.onClose - Called on Cancel, Escape or backdrop click.
+ * @param {() => void} props.onConfirm - Called when the user confirms "Clear all".
+ */
 export default function ClearAllModal({ isOpen, onClose, onConfirm }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} labelledBy="clear-all-title">

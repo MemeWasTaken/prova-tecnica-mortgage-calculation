@@ -1,3 +1,22 @@
+/**
+ * Toolbar above the history list: shows the counters and the bulk actions.
+ *
+ * Buttons depend on the selection:
+ *   - "Compare n": only with two or more selected entries.
+ *   - "Deselect":  only with at least one selected entry.
+ *   - "+ Add 10 dummy" and "Clear all": always available.
+ *
+ * It is purely presentational: every action is delegated to the parent.
+ *
+ * @param {Object} props
+ * @param {number} props.count - Total number of saved simulations.
+ * @param {number} props.selectedCount - Number of selected simulations.
+ * @param {() => void} props.onClearAll - Called on "Clear all" (the parent
+ *   asks for confirmation).
+ * @param {() => void} props.onDeselect - Called on "Deselect".
+ * @param {() => void} props.onCompare - Called on "Compare n".
+ * @param {() => void} props.onAddDummy - Called on "+ Add 10 dummy".
+ */
 export default function HistoryToolbar({
   count,
   selectedCount,
@@ -10,6 +29,7 @@ export default function HistoryToolbar({
     <div className="mt-8 rounded-lg border border-gray-100 bg-white px-4 py-3 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm text-gray-500">
+          {/* Singular/plural label, plus the selection counter when relevant. */}
           {count} simulation{count === 1 ? '' : 's'}
           {selectedCount > 0 && (
             <>
