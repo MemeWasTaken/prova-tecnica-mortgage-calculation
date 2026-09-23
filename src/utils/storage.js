@@ -39,7 +39,8 @@ export function getHistory() {
  * A unique `id` is generated and assigned to the entry. Note that `id` is
  * spread first, so an `id` already present in `entry` takes precedence.
  * Unlike reads, writes are not wrapped in try/catch: a full or unavailable
- * storage will throw (e.g. `QuotaExceededError`).
+ * storage will throw (e.g. `QuotaExceededError`), so callers must handle it
+ * (the calculator form shows an error banner and lets the user retry).
  *
  * @param {Object} entry - Calculation data to store (without `id`).
  * @returns {void}

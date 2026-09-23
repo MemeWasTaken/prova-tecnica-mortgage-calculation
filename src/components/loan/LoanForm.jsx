@@ -27,6 +27,10 @@ import {
  *     user calculates again.
  *   - The Save button only appears when a result exists (`hasResult`) and is
  *     disabled after a click, until the next change or submit.
+ *   - If `onSave` throws (e.g. browser storage full or blocked), a dismissible
+ *     error banner is shown above the buttons and Save stays available so
+ *     the user can try again. The banner is cleared on dismiss, on any field
+ *     change, on a new submit and on a successful save.
  *   - The form uses `noValidate`: validation is done in JS with custom
  *     messages instead of the browser's native bubbles.
  *
@@ -39,7 +43,8 @@ import {
  *   rateType: string,
  * } | null) => void} props.onCalculate - Receives the validated values, or
  *   `null` to clear the current result.
- * @param {() => void} props.onSave - Called when the user clicks Save.
+ * @param {() => void} props.onSave - Called when the user clicks Save. It may
+ *   throw to signal that the simulation could not be saved.
  * @param {boolean} props.hasResult - Whether a result is currently displayed
  *   (controls the visibility of the Save button).
  */
@@ -54,6 +59,8 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
   // Validation messages keyed by field name (`amount`, `rate`).
   const [errors, setErrors] = useState({});
   const [isSaved, setIsSaved] = useState(false);
+  // Whether the last attempt to save failed (shows the error banner).
+  const [saveError, setSaveError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -71,6 +78,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
 
     setErrors(nextErrors);
     setIsSaved(false);
+    setSaveError(false);
     if (Object.keys(nextErrors).length > 0) {
       onCalculate(null);
       return;
@@ -90,7 +98,20 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
   const handleFieldChange = (setter) => (value) => {
     setter(value);
     setIsSaved(false);
+    setSaveError(false);
     onCalculate(null);
+  };
+
+  // Saving can fail (e.g. storage full or blocked): on failure show the banner
+  // and leave the Save button in its default state so the user can retry.
+  const handleSaveClick = () => {
+    try {
+      onSave();
+      setIsSaved(true);
+      setSaveError(false);
+    } catch {
+      setSaveError(true);
+    }
   };
 
   return (
@@ -229,6 +250,41 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
         onChange={handleFieldChange(setRateType)}
       />
 
+      {saveError && (
+        <div
+          role="alert"
+          className="mt-6 flex items-start gap-3 rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-700 sm:text-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="mt-0.5 h-4 w-4 shrink-0"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <p className="flex-1">
+            Unable to save this simulation. Your browser storage may be full or blocked. Try
+            disabling private browsing or freeing up space.
+          </p>
+          <button
+            type="button"
+            onClick={() => setSaveError(false)}
+            aria-label="Dismiss error"
+            className="shrink-0 rounded hover:opacity-70"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="mt-6 flex gap-2">
         <button
           type="submit"
@@ -240,10 +296,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
         {hasResult && (
           <button
             type="button"
-            onClick={() => {
-              onSave();
-              setIsSaved(true);
-            }}
+            onClick={handleSaveClick}
             disabled={isSaved}
             aria-live="polite"
             className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-xs font-semibold sm:text-sm ${

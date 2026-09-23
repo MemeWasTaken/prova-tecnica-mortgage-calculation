@@ -3,6 +3,7 @@ import Container from '../components/Container';
 import LoanForm from '../components/loan/LoanForm';
 import ResultCard from '../components/loan/ResultCard';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { SIMULATED_SAVE_ERROR } from '../config/loanDefaults';
 import { calculateMortgage } from '../utils/mortgage';
 import { saveCalculation } from '../utils/storage';
 
@@ -61,9 +62,21 @@ export default function CalculatorPage() {
    * Called by `LoanForm` when the user saves the current calculation.
    * Converts the result into the history entry shape (see `generateDummyEntries`)
    * and persists it. Does nothing if there is no result yet.
+   *
+   * Throws if the simulation cannot be saved (e.g. the browser storage is full
+   * or blocked); `LoanForm` catches it and shows an error banner. For demo and
+   * testing purposes, a calculation matching `SIMULATED_SAVE_ERROR`
+   * (amount 1 and rate 1) fails on purpose to trigger that banner.
    */
   const handleSave = () => {
     if (!result) return;
+
+    if (
+      result.amount === SIMULATED_SAVE_ERROR.amount &&
+      result.rate === SIMULATED_SAVE_ERROR.rate
+    ) {
+      throw new Error('Simulated save error (demo trigger: amount 1, rate 1)');
+    }
 
     saveCalculation({
       date: new Date().toISOString(),

@@ -124,4 +124,49 @@ describe('CalculatorPage saving', () => {
     });
     expect(saved.monthly).toBeCloseTo(579.96, 2);
   });
+
+  it('fails on purpose when the amount and the rate are both 1, to demo the error banner', async () => {
+    mockViewportWidth(DESKTOP_WIDTH);
+    const user = userEvent.setup();
+    render(<CalculatorPage />);
+
+    await fillAndCalculate(user, { amount: '1', rate: '1' });
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/unable to save this simulation/i);
+    expect(screen.getByRole('button', { name: '+ Save' })).toBeEnabled();
+    expect(localStorage.getItem(HISTORY_KEY)).toBeNull();
+  });
+
+  it('does not trigger the demo error when only one of amount and rate is 1', async () => {
+    mockViewportWidth(DESKTOP_WIDTH);
+    const user = userEvent.setup();
+    render(<CalculatorPage />);
+
+    await fillAndCalculate(user, { amount: '1', rate: '2' });
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(HISTORY_KEY))).toHaveLength(1);
+  });
+
+  it('shows an error and saves nothing when the browser storage rejects the write', async () => {
+    mockViewportWidth(DESKTOP_WIDTH);
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+    });
+    const user = userEvent.setup();
+    render(<CalculatorPage />);
+
+    await fillAndCalculate(user);
+    await user.click(screen.getByRole('button', { name: /save/i }));
+    // Restore right away so a failing assertion cannot leak the mock to other tests.
+    setItem.mockRestore();
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/unable to save this simulation/i);
+    expect(screen.getByRole('button', { name: '+ Save' })).toBeEnabled();
+    // The estimate itself stays on screen: only the saving failed.
+    expect(screen.getByText(/estimated installment/i)).toBeInTheDocument();
+    expect(localStorage.getItem(HISTORY_KEY)).toBeNull();
+  });
 });
