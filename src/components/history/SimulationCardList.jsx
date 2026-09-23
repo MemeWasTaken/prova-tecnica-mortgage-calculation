@@ -1,4 +1,7 @@
 import { formatCurrency, formatDate, formatPaymentsFrequency } from '../../utils/format';
+import SelectionCheckbox from './SelectionCheckbox';
+import TypeBadge from './TypeBadge';
+import DeleteButton from './DeleteButton';
 
 export default function SimulationCardList({ history, selectedIds, onToggleSelect, onDelete }) {
   return (
@@ -23,72 +26,23 @@ export default function SimulationCardList({ history, selectedIds, onToggleSelec
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <label
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex h-4 w-4 items-center justify-center overflow-hidden rounded-sm border border-gray-300 bg-white"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => onToggleSelect(entry.id)}
-                    aria-label={label}
-                    className="peer sr-only"
-                  />
-                  <span className="hidden h-full w-full items-center justify-center bg-indigo-600 peer-checked:flex">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-2.5 w-2.5"
-                    >
-                      <path d="M3 8l3 3 7-7" />
-                    </svg>
-                  </span>
-                </label>
+                <SelectionCheckbox
+                  checked={isSelected}
+                  onChange={() => onToggleSelect(entry.id)}
+                  ariaLabel={label}
+                />
                 <span className="text-sm text-gray-500">{formatDate(entry.date)}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span
-                  className="rounded-md px-2 py-1 text-xs font-medium"
-                  style={
-                    entry.type === 'Variable'
-                      ? { backgroundColor: '#F0FDF4', color: '#16A34A' }
-                      : { backgroundColor: '#EFF6FF', color: '#1D4ED8' }
-                  }
-                >
-                  {entry.type}
-                </span>
-                <button
-                  type="button"
+                <TypeBadge type={entry.type} />
+                <DeleteButton
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(entry.id);
                   }}
-                  aria-label={deleteLabel}
-                  className="rounded-md p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                    <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                  </svg>
-                </button>
+                  ariaLabel={deleteLabel}
+                />
               </div>
             </div>
 
