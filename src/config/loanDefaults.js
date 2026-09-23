@@ -54,3 +54,13 @@ export const LOAN_DEFAULTS = {
   paymentsPerYear: 12,
   rateType: 'Fixed',
 };
+
+/**
+ * Demo/test trigger for the "unable to save" error state.
+ *
+ * Saving a calculation whose amount AND annual rate both match these values
+ * fails on purpose (see `CalculatorPage`), so the error banner of the loan
+ * form can be shown without having to fill or block the browser storage.
+ * No real mortgage uses these values.
+ */
+export const SIMULATED_SAVE_ERROR = { amount: 1, rate: 1 };

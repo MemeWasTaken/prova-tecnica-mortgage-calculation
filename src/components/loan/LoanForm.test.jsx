@@ -201,6 +201,70 @@ describe('LoanForm Save button', () => {
   });
 });
 
+describe('LoanForm save failure', () => {
+  const failingSave = () => {
+    throw new Error('QuotaExceededError');
+  };
+
+  function renderWithResult(onSave) {
+    const user = userEvent.setup();
+    render(<LoanForm onCalculate={vi.fn()} onSave={onSave} hasResult />);
+    return user;
+  }
+
+  it('does not show an error banner when saving succeeds', async () => {
+    const user = renderWithResult(vi.fn());
+
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('shows an error banner and keeps Save available when onSave throws', async () => {
+    const user = renderWithResult(failingSave);
+
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/unable to save this simulation/i);
+    const saveButton = screen.getByRole('button', { name: '+ Save' });
+    expect(saveButton).toBeEnabled();
+    expect(screen.queryByRole('button', { name: /saved/i })).not.toBeInTheDocument();
+  });
+
+  it('closes the error banner with the dismiss button', async () => {
+    const user = renderWithResult(failingSave);
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    await user.click(screen.getByRole('button', { name: /dismiss error/i }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '+ Save' })).toBeEnabled();
+  });
+
+  it('clears the error banner when a field changes', async () => {
+    const user = renderWithResult(failingSave);
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    await user.type(screen.getByLabelText(/loan amount/i), '1');
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('clears the error banner and shows the saved state when a retry succeeds', async () => {
+    const onSave = vi.fn().mockImplementationOnce(failingSave).mockImplementation(() => {});
+    const user = renderWithResult(onSave);
+
+    await user.click(screen.getByRole('button', { name: /save/i }));
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(onSave).toHaveBeenCalledTimes(2);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /saved/i })).toBeDisabled();
+  });
+});
+
 describe('LoanForm ARIA structure', () => {
   it('exposes the payment frequency and rate type options as radiogroups', () => {
     setup();
