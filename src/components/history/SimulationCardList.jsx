@@ -3,6 +3,26 @@ import SelectionCheckbox from './SelectionCheckbox';
 import TypeBadge from './TypeBadge';
 import DeleteButton from './DeleteButton';
 
+/**
+ * History as a list of cards (mobile). The desktop counterpart is
+ * `SimulationTable`.
+ *
+ * Each card shows date, rate type, the installment (with its payment
+ * frequency) and chips for amount, rate and duration. The whole card is
+ * clickable to toggle its selection (for comparison); the checkbox and the
+ * delete button give the same actions an explicit, keyboard-accessible
+ * control. When exactly one card is selected a banner asks for one more.
+ *
+ * Accessible names for the checkbox and delete button include the position
+ * and date of the entry ("simulation 2 of 10 from ..."), so each one is
+ * unique for screen readers.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.history - Entries to display, in order.
+ * @param {string[]} props.selectedIds - Ids of the selected entries.
+ * @param {(id: string) => void} props.onToggleSelect - Toggles an entry's selection.
+ * @param {(id: string) => void} props.onDelete - Deletes an entry.
+ */
 export default function SimulationCardList({ history, selectedIds, onToggleSelect, onDelete }) {
   return (
     <div className="mt-4 flex flex-col gap-3">
@@ -36,6 +56,7 @@ export default function SimulationCardList({ history, selectedIds, onToggleSelec
 
               <div className="flex items-center gap-2">
                 <TypeBadge type={entry.type} />
+                {/* stopPropagation: deleting must not also toggle the card selection. */}
                 <DeleteButton
                   onClick={(e) => {
                     e.stopPropagation();

@@ -1,3 +1,12 @@
+/**
+ * Small colored badge showing the rate type: green for `Variable`, blue for
+ * anything else (i.e. `Fixed`). Colors are set inline (not through Tailwind
+ * classes) with fixed hex values.
+ *
+ * @param {Object} props
+ * @param {string} props.type - Rate type, `'Fixed'` or `'Variable'`; it is also
+ *   the displayed text.
+ */
 export default function TypeBadge({ type }) {
   return (
     <span

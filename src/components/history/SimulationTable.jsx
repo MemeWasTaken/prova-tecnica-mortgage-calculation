@@ -3,6 +3,27 @@ import SelectionCheckbox from './SelectionCheckbox';
 import TypeBadge from './TypeBadge';
 import DeleteButton from './DeleteButton';
 
+/**
+ * History as a table (desktop). The mobile counterpart is `SimulationCardList`.
+ *
+ * Each row is an entry and the whole row is clickable to toggle its selection
+ * (for comparison); the checkbox and the delete button give the same actions
+ * an explicit, keyboard-accessible control. When exactly one entry is
+ * selected a hint row explains that another one is needed to compare.
+ *
+ * Accessible names for the checkbox and delete button include the position
+ * and date of the entry ("simulation 2 of 10 from ..."), so each one is
+ * unique for screen readers.
+ *
+ * Note: the "Monthly" column shows the installment per payment period, which
+ * is only monthly when the payment frequency is monthly.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.history - Entries to display, in order.
+ * @param {string[]} props.selectedIds - Ids of the selected entries.
+ * @param {(id: string) => void} props.onToggleSelect - Toggles an entry's selection.
+ * @param {(id: string) => void} props.onDelete - Deletes an entry.
+ */
 export default function SimulationTable({ history, selectedIds, onToggleSelect, onDelete }) {
   return (
     <div className="mt-4 overflow-x-auto rounded-lg border border-gray-100 bg-white shadow-sm">
@@ -30,6 +51,7 @@ export default function SimulationTable({ history, selectedIds, onToggleSelect, 
             const label = `Select simulation ${index + 1} of ${history.length} from ${formatDate(entry.date)}`;
             const deleteLabel = `Delete simulation ${index + 1} of ${history.length} from ${formatDate(entry.date)}`;
             return (
+              // Row background: selected, or zebra striping with hover feedback.
               <tr
                 key={entry.id}
                 onClick={() => onToggleSelect(entry.id)}
@@ -80,6 +102,7 @@ export default function SimulationTable({ history, selectedIds, onToggleSelect, 
             );
           })}
           {selectedIds.length === 1 && (
+            // colSpan matches the number of columns (checkbox + 7 data + delete).
             <tr className="border-t border-gray-100">
               <td colSpan={9} className="px-4 py-3 text-xs text-gray-400">
                 Select one more entry to enable comparison.

@@ -1,8 +1,22 @@
+/** Tailwind classes for the icon, by `size` prop. */
 const ICON_SIZES = {
   sm: 'h-3.5 w-3.5',
   md: 'h-4 w-4',
 };
 
+/**
+ * Icon-only trash button used to delete a history entry.
+ *
+ * Since it has no visible text, `ariaLabel` is required for screen readers.
+ * It does not stop event propagation: when placed inside a clickable row or
+ * card, the caller's `onClick` must call `e.stopPropagation()` (as the
+ * history lists do) to avoid also toggling the selection.
+ *
+ * @param {Object} props
+ * @param {(e: React.MouseEvent) => void} props.onClick - Click handler.
+ * @param {string} props.ariaLabel - Accessible name describing what is deleted.
+ * @param {'sm' | 'md'} [props.size='md'] - Icon size (`sm` for the dense table).
+ */
 export default function DeleteButton({ onClick, ariaLabel, size = 'md' }) {
   return (
     <button
