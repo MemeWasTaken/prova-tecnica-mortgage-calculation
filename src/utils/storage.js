@@ -15,16 +15,19 @@ const HISTORY_KEY = 'mortgage-history';
 /**
  * Reads the saved history.
  *
- * Fails safe: if nothing is stored, the stored JSON is corrupted, or
- * `localStorage` is unavailable (e.g. blocked by browser privacy settings),
- * an empty array is returned instead of throwing.
+ * Fails safe: if nothing is stored, the stored JSON is corrupted or is not an
+ * array (e.g. `{}` or `null`), or `localStorage` is unavailable (e.g. blocked
+ * by browser privacy settings), an empty array is returned instead of
+ * throwing.
  *
  * @returns {Array<Object>} History entries, newest first.
  */
 export function getHistory() {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    // Valid JSON is not enough: callers rely on array methods (`map`, `filter`).
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }

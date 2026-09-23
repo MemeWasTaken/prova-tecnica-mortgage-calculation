@@ -30,6 +30,25 @@ describe('getHistory', () => {
 
     expect(getHistory()).toEqual([]);
   });
+
+  it.each([
+    ['an object', '{}'],
+    ['a string', '"text"'],
+    ['a number', '42'],
+    ['null', 'null'],
+  ])('returns an empty array when the stored value is valid JSON but %s, not an array', (_, stored) => {
+    localStorage.setItem(HISTORY_KEY, stored);
+
+    expect(getHistory()).toEqual([]);
+  });
+
+  it('lets a new entry be saved after a non-array value was stored', () => {
+    localStorage.setItem(HISTORY_KEY, '{}');
+
+    saveCalculation({ amount: 1000 });
+
+    expect(getHistory()).toHaveLength(1);
+  });
 });
 
 describe('saveCalculation', () => {
