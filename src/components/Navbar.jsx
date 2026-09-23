@@ -40,8 +40,8 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="border-b border-gray-200 bg-white">
-        <Container className="flex h-[55px] items-center justify-between sm:h-16">
+      <header className="h-14 border-b border-gray-200 bg-white sm:h-auto">
+        <Container className="flex h-full items-center justify-between sm:h-16">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <img src={logo} alt="FinCalc logo" className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -72,14 +72,14 @@ export default function Navbar() {
 
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-gray-200 bg-white sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 flex h-14 border-t border-gray-200 bg-white sm:hidden"
       >
         {TABS.map((tab) => (
           <Link
             key={tab.path}
             to={tab.path}
             aria-current={pathname === tab.path ? 'page' : undefined}
-            className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-xs font-medium ${
+            className={`flex flex-1 flex-col items-center justify-center gap-0.5 text-xs font-medium ${
               pathname === tab.path ? 'text-indigo-600' : 'text-gray-500'
             }`}
           >

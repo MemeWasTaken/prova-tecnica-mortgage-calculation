@@ -6,7 +6,7 @@ import HistoryPage from './pages/HistoryPage';
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 pb-16 sm:pb-0">
+    <div className="flex min-h-screen flex-col bg-gray-50 pb-14 sm:pb-0">
       <Navbar />
       <Routes>
         <Route path="/" element={<CalculatorPage />} />

@@ -1,19 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import Container from '../components/Container';
 import LoanForm from '../components/loan/LoanForm';
 import ResultCard from '../components/loan/ResultCard';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { calculateMortgage } from '../utils/mortgage';
 import { saveCalculation } from '../utils/storage';
 
 export default function CalculatorPage() {
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
+  const isSideBySide = useMediaQuery('(min-width: 1024px)');
+
+  const scrollToResult = useEffectEvent(() => {
+    if (isSideBySide) return;
+    resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
   useEffect(() => {
-    if (!result) return;
-    if (window.innerWidth >= 1024) return;
-
-    resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (result) scrollToResult();
   }, [result]);
 
   const handleCalculate = (formValues) => {
