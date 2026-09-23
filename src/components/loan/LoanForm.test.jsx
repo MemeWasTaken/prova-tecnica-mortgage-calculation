@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoanForm from './LoanForm';
 
@@ -21,8 +21,8 @@ describe('LoanForm initial rendering', () => {
     setup();
 
     expect(screen.getByRole('slider')).toHaveValue('20');
-    expect(screen.getByRole('button', { name: 'Monthly' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'Fixed' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('radio', { name: 'Monthly' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('radio', { name: 'Fixed' })).toHaveAttribute('aria-checked', 'true');
   });
 
   it('does not render the Save button when hasResult is false', () => {
@@ -121,8 +121,8 @@ describe('LoanForm toggle interactions', () => {
   it('updates the payment frequency and includes it in the submitted payload', async () => {
     const { onCalculate, user } = setup();
 
-    await user.click(screen.getByRole('button', { name: 'Quarterly' }));
-    expect(screen.getByRole('button', { name: 'Quarterly' })).toHaveAttribute('aria-pressed', 'true');
+    await user.click(screen.getByRole('radio', { name: 'Quarterly' }));
+    expect(screen.getByRole('radio', { name: 'Quarterly' })).toHaveAttribute('aria-checked', 'true');
 
     await fillValid(user);
     await user.click(screen.getByRole('button', { name: /calculate/i }));
@@ -133,8 +133,8 @@ describe('LoanForm toggle interactions', () => {
   it('updates the rate type and includes it in the submitted payload', async () => {
     const { onCalculate, user } = setup();
 
-    await user.click(screen.getByRole('button', { name: 'Variable' }));
-    expect(screen.getByRole('button', { name: 'Variable' })).toHaveAttribute('aria-pressed', 'true');
+    await user.click(screen.getByRole('radio', { name: 'Variable' }));
+    expect(screen.getByRole('radio', { name: 'Variable' })).toHaveAttribute('aria-checked', 'true');
 
     await fillValid(user);
     await user.click(screen.getByRole('button', { name: /calculate/i }));
@@ -147,7 +147,7 @@ describe('LoanForm loan term clamping', () => {
   it('clamps a value above the max down to 40', () => {
     setup();
 
-    const termInput = screen.getByLabelText('Loan term in years');
+    const termInput = screen.getByRole('spinbutton', { name: /yr/i });
     fireEvent.change(termInput, { target: { value: '999' } });
 
     expect(screen.getByRole('slider')).toHaveValue('40');
@@ -156,7 +156,7 @@ describe('LoanForm loan term clamping', () => {
   it('clamps a value below the min up to 1', () => {
     setup();
 
-    const termInput = screen.getByLabelText('Loan term in years');
+    const termInput = screen.getByRole('spinbutton', { name: /yr/i });
     fireEvent.change(termInput, { target: { value: '0' } });
 
     expect(screen.getByRole('slider')).toHaveValue('1');
@@ -165,7 +165,7 @@ describe('LoanForm loan term clamping', () => {
   it('does not update the term when the number input is cleared', () => {
     setup();
 
-    const termInput = screen.getByLabelText('Loan term in years');
+    const termInput = screen.getByRole('spinbutton', { name: /yr/i });
     fireEvent.change(termInput, { target: { value: '' } });
 
     expect(screen.getByRole('slider')).toHaveValue('20');
@@ -184,5 +184,47 @@ describe('LoanForm Save button', () => {
 
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('button', { name: /saved/i })).toBeDisabled();
+  });
+
+  it('does not use aria-pressed, since the save action is not a two-way toggle', async () => {
+    const onSave = vi.fn();
+    const onCalculate = vi.fn();
+    const user = userEvent.setup();
+    render(<LoanForm onCalculate={onCalculate} onSave={onSave} hasResult />);
+
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    expect(saveButton).not.toHaveAttribute('aria-pressed');
+
+    await user.click(saveButton);
+
+    expect(screen.getByRole('button', { name: /saved/i })).not.toHaveAttribute('aria-pressed');
+  });
+});
+
+describe('LoanForm ARIA structure', () => {
+  it('exposes the payment frequency and rate type options as radiogroups', () => {
+    setup();
+
+    const radiogroups = screen.getAllByRole('radiogroup');
+    expect(radiogroups).toHaveLength(2);
+    radiogroups.forEach((group) => {
+      expect(group).toHaveAccessibleName();
+    });
+  });
+
+  it('exposes exactly one selected radio per group', () => {
+    setup();
+
+    const paymentsGroup = screen.getByRole('radiogroup', { name: /payments per year/i });
+    const rateTypeGroup = screen.getByRole('radiogroup', { name: /rate type/i });
+
+    expect(within(paymentsGroup).getAllByRole('radio', { checked: true })).toHaveLength(1);
+    expect(within(rateTypeGroup).getAllByRole('radio', { checked: true })).toHaveLength(1);
+  });
+
+  it('gives the loan term number input an accessible name derived from its visible label', () => {
+    setup();
+
+    expect(screen.getByRole('spinbutton', { name: 'Loan term * yr' })).toBeInTheDocument();
   });
 });
