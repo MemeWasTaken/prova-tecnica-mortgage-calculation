@@ -174,9 +174,9 @@ n = term in years × payments per year
   duration: 20,                // years
   payments: 12,                // payments per year
   type: 'Fixed',               // 'Fixed' | 'Variable'
-  monthly: 1482.35,            // installment per payment period
-  total: 355764.0,
-  interest: 105764.0,
+  monthly: 1482.22,            // installment per payment period
+  total: 355732.99,
+  interest: 105732.99,
 }
 ```
 
