@@ -59,58 +59,70 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
       onSubmit={handleSubmit}
       noValidate
       aria-labelledby="loan-parameters-heading"
-      className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+      className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
     >
-      <h2 id="loan-parameters-heading" className="font-semibold text-gray-900">
+      <h2 id="loan-parameters-heading" className="sr-only font-semibold text-gray-900 sm:not-sr-only">
         Loan parameters
       </h2>
 
-      <FormField label="Loan amount" htmlFor="amount" required error={errors.amount}>
-        <div
-          className={`mt-1 flex items-center rounded-md border px-3 ${
-            errors.amount ? 'border-red-400' : 'border-gray-300'
-          }`}
-        >
-          <span className="text-gray-400">€</span>
-          <input
-            id="amount"
-            type="number"
-            min={LOAN_CONSTRAINTS.amount.min}
-            value={amount}
-            onChange={(e) => handleFieldChange(setAmount)(e.target.value)}
-            placeholder="200,000"
-            required
-            aria-required="true"
-            aria-invalid={Boolean(errors.amount)}
-            aria-describedby={errors.amount ? 'amount-error' : undefined}
-            className="w-full bg-transparent px-2 py-2 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-          />
-        </div>
-      </FormField>
+      <div className="grid grid-cols-2 gap-3 sm:block">
+        <FormField label="Loan amount" htmlFor="amount" required error={errors.amount}>
+          <div
+            className={`mt-1 flex items-center rounded-md border px-3 ${
+              errors.amount ? 'border-red-400' : 'border-gray-300'
+            }`}
+          >
+            <span className="text-gray-400">€</span>
+            <input
+              id="amount"
+              type="number"
+              min={LOAN_CONSTRAINTS.amount.min}
+              value={amount}
+              onChange={(e) => handleFieldChange(setAmount)(e.target.value)}
+              placeholder="200,000"
+              required
+              aria-required="true"
+              aria-invalid={Boolean(errors.amount)}
+              aria-describedby={errors.amount ? 'amount-error' : undefined}
+              className="w-full bg-transparent px-2 py-2 text-xs outline-none sm:text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+          </div>
+        </FormField>
 
-      <FormField label="Annual interest rate" htmlFor="rate" required error={errors.rate}>
-        <div
-          className={`mt-1 flex items-center rounded-md border px-3 ${
-            errors.rate ? 'border-red-400' : 'border-gray-300'
-          }`}
+        <FormField
+          label={
+            <>
+              <span className="sm:hidden">Interest rate</span>
+              <span className="hidden sm:inline">Annual interest rate</span>
+            </>
+          }
+          htmlFor="rate"
+          required
+          error={errors.rate}
         >
-          <input
-            id="rate"
-            type="number"
-            min={LOAN_CONSTRAINTS.rate.min}
-            step={LOAN_CONSTRAINTS.rate.step}
-            value={rate}
-            onChange={(e) => handleFieldChange(setRate)(e.target.value)}
-            placeholder={String(LOAN_CONSTRAINTS.rate.placeholder)}
-            required
-            aria-required="true"
-            aria-invalid={Boolean(errors.rate)}
-            aria-describedby={errors.rate ? 'rate-error' : undefined}
-            className="w-full bg-transparent py-2 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-          />
-          <span className="text-gray-400">%</span>
-        </div>
-      </FormField>
+          <div
+            className={`mt-1 flex items-center rounded-md border px-3 ${
+              errors.rate ? 'border-red-400' : 'border-gray-300'
+            }`}
+          >
+            <input
+              id="rate"
+              type="number"
+              min={LOAN_CONSTRAINTS.rate.min}
+              step={LOAN_CONSTRAINTS.rate.step}
+              value={rate}
+              onChange={(e) => handleFieldChange(setRate)(e.target.value)}
+              placeholder={String(LOAN_CONSTRAINTS.rate.placeholder)}
+              required
+              aria-required="true"
+              aria-invalid={Boolean(errors.rate)}
+              aria-describedby={errors.rate ? 'rate-error' : undefined}
+              className="w-full bg-transparent py-2 text-xs outline-none sm:text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <span className="text-gray-400">%</span>
+          </div>
+        </FormField>
+      </div>
 
       <FormField label="Loan term" htmlFor="term" required>
         <div className="mt-2 flex items-center gap-4">
@@ -177,7 +189,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
       <div className="mt-6 flex gap-2">
         <button
           type="submit"
-          className="flex-1 rounded-md bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+          className="flex-1 rounded-md bg-indigo-600 py-2.5 text-xs font-semibold text-white hover:bg-indigo-700 sm:text-sm"
         >
           Calculate
         </button>
@@ -191,7 +203,7 @@ export default function LoanForm({ onCalculate, onSave, hasResult }) {
             }}
             disabled={isSaved}
             aria-live="polite"
-            className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-sm font-semibold ${
+            className={`w-28 shrink-0 rounded-md border px-4 py-2.5 text-xs font-semibold sm:text-sm ${
               isSaved
                 ? 'border-green-300 bg-green-50 text-green-600'
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'

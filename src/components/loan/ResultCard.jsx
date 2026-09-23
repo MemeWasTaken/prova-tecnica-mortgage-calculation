@@ -3,7 +3,7 @@ import { formatCurrency } from '../../utils/format';
 export default function ResultCard({ result }) {
   if (!result) {
     return (
-      <div className="flex min-h-72 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-center">
+      <div className="hidden min-h-72 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 text-center sm:flex">
         <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-400">
           +
         </div>
@@ -18,19 +18,19 @@ export default function ResultCard({ result }) {
 
   return (
     <div>
-      <div className="rounded-lg bg-indigo-600 p-6 text-white">
+      <div className="rounded-lg bg-indigo-600 p-4 text-white sm:p-6">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium tracking-wide text-indigo-100 uppercase">
+          <span className="text-[11px] font-medium tracking-wide text-indigo-100 uppercase sm:text-xs">
             Estimated installment
           </span>
-          <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold uppercase">
+          <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-semibold uppercase sm:text-xs">
             {rateType}
           </span>
         </div>
 
-        <p className="mt-2 text-3xl font-bold">€ {formatCurrency(installment)}</p>
+        <p className="mt-2 text-2xl font-bold sm:text-3xl">€ {formatCurrency(installment)}</p>
 
-        <div className="mt-6 grid grid-cols-2 gap-y-4 text-sm">
+        <div className="mt-6 grid grid-cols-2 gap-y-4 text-xs sm:text-sm">
           <div>
             <p className="text-xs text-indigo-200 uppercase">Principal</p>
             <p className="mt-0.5 font-semibold">€ {formatCurrency(amount)}</p>

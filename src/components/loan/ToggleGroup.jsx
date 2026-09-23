@@ -1,7 +1,7 @@
 export default function ToggleGroup({ label, required, labelId, options, value, onChange }) {
   return (
     <div className="mt-4">
-      <span id={labelId} className="text-sm font-medium text-gray-700">
+      <span id={labelId} className="text-xs font-medium text-gray-700 sm:text-sm">
         {label} {required && <span className="text-red-500">*</span>}
       </span>
       <div role="radiogroup" aria-labelledby={labelId} className="mt-2 grid grid-cols-2 gap-2">
@@ -14,7 +14,7 @@ export default function ToggleGroup({ label, required, labelId, options, value, 
               role="radio"
               onClick={() => onChange(option.value)}
               aria-checked={selected}
-              className={`rounded-md border px-3 py-2 text-sm font-medium ${
+              className={`rounded-md border px-3 py-2 text-xs font-medium sm:text-sm ${
                 selected
                   ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
                   : 'border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-gray-50 hover:text-gray-900'

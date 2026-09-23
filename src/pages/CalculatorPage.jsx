@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Container from '../components/Container';
 import LoanForm from '../components/loan/LoanForm';
 import ResultCard from '../components/loan/ResultCard';
@@ -7,6 +7,14 @@ import { saveCalculation } from '../utils/storage';
 
 export default function CalculatorPage() {
   const [result, setResult] = useState(null);
+  const resultRef = useRef(null);
+
+  useEffect(() => {
+    if (!result) return;
+    if (window.innerWidth >= 1024) return;
+
+    resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [result]);
 
   const handleCalculate = (formValues) => {
     if (!formValues) {
@@ -36,15 +44,20 @@ export default function CalculatorPage() {
 
   return (
     <main className="flex-1">
-      <Container className="py-10">
-        <h1 className="text-3xl font-bold text-gray-900">Mortgage Calculator</h1>
-        <p className="mt-2 text-gray-500">
-          Enter your loan parameters below to estimate your repayment schedule.
+      <Container className="py-6 sm:py-10">
+        <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">Mortgage Calculator</h1>
+        <p className="mt-2 text-xs text-gray-500 sm:text-base">
+          <span className="sm:hidden">Estimate your monthly repayment.</span>
+          <span className="hidden sm:inline">
+            Enter your loan parameters below to estimate your repayment schedule.
+          </span>
         </p>
 
-        <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">
+        <div className="mt-6 grid items-start gap-6 sm:mt-8 lg:grid-cols-2">
           <LoanForm onCalculate={handleCalculate} onSave={handleSave} hasResult={Boolean(result)} />
-          <ResultCard result={result} />
+          <div ref={resultRef}>
+            <ResultCard result={result} />
+          </div>
         </div>
       </Container>
     </main>

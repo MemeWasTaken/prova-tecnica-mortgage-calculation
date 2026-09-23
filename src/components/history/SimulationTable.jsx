@@ -24,6 +24,8 @@ export default function SimulationTable({ history, selectedIds, onToggleSelect, 
         <tbody>
           {history.map((entry, index) => {
             const isSelected = selectedIds.includes(entry.id);
+            const label = `Select simulation ${index + 1} of ${history.length} from ${formatDate(entry.date)}`;
+            const deleteLabel = `Delete simulation ${index + 1} of ${history.length} from ${formatDate(entry.date)}`;
             return (
               <tr
                 key={entry.id}
@@ -45,7 +47,7 @@ export default function SimulationTable({ history, selectedIds, onToggleSelect, 
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => onToggleSelect(entry.id)}
-                      aria-label={`Select simulation from ${formatDate(entry.date)}`}
+                      aria-label={label}
                       className="peer sr-only"
                     />
                     <span className="hidden h-full w-full items-center justify-center bg-indigo-600 peer-checked:flex">
@@ -97,7 +99,7 @@ export default function SimulationTable({ history, selectedIds, onToggleSelect, 
                       e.stopPropagation();
                       onDelete(entry.id);
                     }}
-                    aria-label={`Delete simulation from ${formatDate(entry.date)}`}
+                    aria-label={deleteLabel}
                     className="rounded-md p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
                   >
                     <svg
