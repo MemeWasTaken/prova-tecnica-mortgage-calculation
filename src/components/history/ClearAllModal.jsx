@@ -2,7 +2,7 @@ import Modal from '../Modal';
 
 export default function ClearAllModal({ isOpen, onClose, onConfirm }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} labelledBy="clear-all-title">
       <div className="w-80 rounded-xl bg-white p-6 shadow-lg sm:w-96">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
           <svg
@@ -23,7 +23,9 @@ export default function ClearAllModal({ isOpen, onClose, onConfirm }) {
           </svg>
         </div>
 
-        <h2 className="mt-4 font-semibold text-gray-900">Clear all simulations?</h2>
+        <h2 id="clear-all-title" className="mt-4 font-semibold text-gray-900">
+          Clear all simulations?
+        </h2>
         <div className="mt-2 text-sm text-gray-500">
           <p>This will permanently delete all saved simulations from your history.</p>
           <p className="font-semibold text-gray-700 mt-2">This action cannot be undone.</p>

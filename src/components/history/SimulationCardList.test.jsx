@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SimulationTable from './SimulationTable';
+import SimulationCardList from './SimulationCardList';
 
 const entry1 = {
   id: 'a1',
@@ -30,44 +30,42 @@ function setup({ history = [entry1, entry2], selectedIds = [] } = {}) {
   const onDelete = vi.fn();
   const user = userEvent.setup();
   render(
-    <table>
-      <SimulationTable
-        history={history}
-        selectedIds={selectedIds}
-        onToggleSelect={onToggleSelect}
-        onDelete={onDelete}
-      />
-    </table>,
+    <SimulationCardList
+      history={history}
+      selectedIds={selectedIds}
+      onToggleSelect={onToggleSelect}
+      onDelete={onDelete}
+    />,
   );
   return { onToggleSelect, onDelete, user };
 }
 
-describe('SimulationTable rendering', () => {
-  it('renders no data rows when history is empty', () => {
+describe('SimulationCardList rendering', () => {
+  it('renders no cards when history is empty', () => {
     setup({ history: [] });
 
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
   });
 
-  it('renders one row per history entry with formatted values', () => {
+  it('renders one card per history entry with formatted values', () => {
     setup();
 
-    const row1 = screen.getByText('15 Mar 2026').closest('tr');
-    expect(within(row1).getByText('€ 100.000,00')).toBeInTheDocument();
-    expect(within(row1).getByText('3.5%')).toBeInTheDocument();
-    expect(within(row1).getByText('20 yr')).toBeInTheDocument();
-    expect(within(row1).getByText('Monthly')).toBeInTheDocument();
-    expect(within(row1).getByText('Fixed')).toBeInTheDocument();
-    expect(within(row1).getByText('€ 592,89')).toBeInTheDocument();
+    const card1 = screen.getByText('15 Mar 2026').closest('div.rounded-lg');
+    expect(within(card1).getByText('€ 100.000,00')).toBeInTheDocument();
+    expect(within(card1).getByText('3.5%')).toBeInTheDocument();
+    expect(within(card1).getByText('20 yr')).toBeInTheDocument();
+    expect(within(card1).getByText('monthly')).toBeInTheDocument();
+    expect(within(card1).getByText('Fixed')).toBeInTheDocument();
+    expect(within(card1).getByText('€ 592,89')).toBeInTheDocument();
 
-    const row2 = screen.getByText('1 Jan 2026').closest('tr');
-    expect(within(row2).getByText('€ 50.000,00')).toBeInTheDocument();
-    expect(within(row2).getByText('Quarterly')).toBeInTheDocument();
-    expect(within(row2).getByText('Variable')).toBeInTheDocument();
+    const card2 = screen.getByText('1 Jan 2026').closest('div.rounded-lg');
+    expect(within(card2).getByText('€ 50.000,00')).toBeInTheDocument();
+    expect(within(card2).getByText('quarterly')).toBeInTheDocument();
+    expect(within(card2).getByText('Variable')).toBeInTheDocument();
   });
 });
 
-describe('SimulationTable selection', () => {
+describe('SimulationCardList selection', () => {
   it('leaves the checkbox unchecked when the entry id is not selected', () => {
     setup({ selectedIds: [] });
 
@@ -80,7 +78,7 @@ describe('SimulationTable selection', () => {
     expect(screen.getByLabelText('Select simulation 1 of 2 from 15 Mar 2026')).toBeChecked();
   });
 
-  it('calls onToggleSelect with the entry id when the row is clicked', async () => {
+  it('calls onToggleSelect with the entry id when the card is clicked', async () => {
     const { onToggleSelect, user } = setup();
 
     await user.click(screen.getByText('€ 100.000,00'));
@@ -98,7 +96,7 @@ describe('SimulationTable selection', () => {
   });
 });
 
-describe('SimulationTable deletion', () => {
+describe('SimulationCardList deletion', () => {
   it('calls onDelete with the entry id when the delete button is clicked', async () => {
     const { onDelete, user } = setup();
 
@@ -116,22 +114,22 @@ describe('SimulationTable deletion', () => {
   });
 });
 
-describe('SimulationTable comparison hint', () => {
+describe('SimulationCardList comparison hint', () => {
   it('does not show the hint when no entry is selected', () => {
     setup({ selectedIds: [] });
 
-    expect(screen.queryByText(/select one more entry/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/select one more/i)).not.toBeInTheDocument();
   });
 
   it('does not show the hint when two entries are selected', () => {
     setup({ selectedIds: ['a1', 'a2'] });
 
-    expect(screen.queryByText(/select one more entry/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/select one more/i)).not.toBeInTheDocument();
   });
 
   it('shows the hint when exactly one entry is selected', () => {
     setup({ selectedIds: ['a1'] });
 
-    expect(screen.getByText(/select one more entry/i)).toBeInTheDocument();
+    expect(screen.getByText(/select one more/i)).toBeInTheDocument();
   });
 });

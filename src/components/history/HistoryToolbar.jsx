@@ -8,7 +8,7 @@ export default function HistoryToolbar({
 }) {
   return (
     <div className="mt-8 rounded-lg border border-gray-100 bg-white px-4 py-3 shadow-xs">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm text-gray-500">
           {count} simulation{count === 1 ? '' : 's'}
           {selectedCount > 0 && (
@@ -18,7 +18,7 @@ export default function HistoryToolbar({
             </>
           )}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {selectedCount > 1 && (
             <button
               type="button"

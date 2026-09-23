@@ -2,16 +2,20 @@ import { useState } from 'react';
 import Container from '../components/Container';
 import HistoryToolbar from '../components/history/HistoryToolbar';
 import SimulationTable from '../components/history/SimulationTable';
+import SimulationCardList from '../components/history/SimulationCardList';
 import ClearAllModal from '../components/history/ClearAllModal';
 import ComparisonPanel from '../components/history/ComparisonPanel';
+import ComparisonCardList from '../components/history/ComparisonCardList';
 import { addDummyEntries, clearHistory, getHistory, removeCalculation } from '../utils/storage';
 import { generateDummyEntries } from '../utils/dummyData';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 export default function HistoryPage() {
   const [history, setHistory] = useState(() => getHistory());
   const [selectedIds, setSelectedIds] = useState([]);
   const [isClearAllOpen, setIsClearAllOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 640px)');
 
   const handleClearAllClick = () => setIsClearAllOpen(true);
   const handleCompareClick = () => setIsCompareOpen(true);
@@ -48,14 +52,14 @@ export default function HistoryPage() {
 
   return (
     <main className="flex-1">
-      <Container className="py-10">
-        <h1 className="text-3xl font-bold text-gray-900">Simulation History</h1>
-        <p className="mt-2 text-gray-500">
+      <Container className="py-6 sm:py-10">
+        <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">Simulation History</h1>
+        <p className="mt-2 text-xs text-gray-500 sm:text-base">
           Review, compare, and manage your saved mortgage simulations.
         </p>
 
         {history.length === 0 ? (
-          <div className="mt-8 flex min-h-72 flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-center shadow-sm">
+          <div className="mt-8 flex min-h-72 flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-6 py-8 text-center shadow-sm sm:px-10">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,14 +100,27 @@ export default function HistoryPage() {
               onAddDummy={handleAddDummy}
             />
             {isCompareOpen && compareEntries.length > 1 && (
-              <ComparisonPanel entries={compareEntries} onClose={() => setIsCompareOpen(false)} />
+              isDesktop ? (
+                <ComparisonPanel entries={compareEntries} onClose={() => setIsCompareOpen(false)} />
+              ) : (
+                <ComparisonCardList entries={compareEntries} onClose={() => setIsCompareOpen(false)} />
+              )
             )}
-            <SimulationTable
-              history={history}
-              selectedIds={selectedIds}
-              onToggleSelect={handleToggleSelect}
-              onDelete={handleDelete}
-            />
+            {isDesktop ? (
+              <SimulationTable
+                history={history}
+                selectedIds={selectedIds}
+                onToggleSelect={handleToggleSelect}
+                onDelete={handleDelete}
+              />
+            ) : (
+              <SimulationCardList
+                history={history}
+                selectedIds={selectedIds}
+                onToggleSelect={handleToggleSelect}
+                onDelete={handleDelete}
+              />
+            )}
           </>
         )}
       </Container>
