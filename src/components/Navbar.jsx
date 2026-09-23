@@ -2,6 +2,11 @@ import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import Container from './Container';
 
+/**
+ * Navigation entries, shared by the desktop links and the mobile bottom bar.
+ * `path` is matched exactly against the current pathname to mark the active
+ * one; `icon` is only shown in the mobile bar.
+ */
 const TABS = [
   {
     label: 'Calculator',
@@ -35,11 +40,23 @@ const TABS = [
   },
 ];
 
+/**
+ * App navigation. Renders two variants of the same links, toggled by CSS at
+ * the `sm` breakpoint (640px):
+ *   - Desktop/tablet: top header with logo, text links and a subtitle.
+ *   - Mobile: compact top header (logo only) plus a fixed bottom tab bar with
+ *     icons. The page wrapper reserves space for it (see `App`), and the
+ *     heights (`h-14`) must stay in sync.
+ *
+ * The active link is derived from the current route and exposed to assistive
+ * technology with `aria-current="page"`.
+ */
 export default function Navbar() {
   const { pathname } = useLocation();
 
   return (
     <>
+      {/* Top header: on mobile it is a fixed-height bar, from `sm` up it has its own height. */}
       <header className="h-14 border-b border-gray-200 bg-white sm:h-auto">
         <Container className="flex h-full items-center justify-between sm:h-16">
           <div className="flex items-center gap-8">
@@ -70,6 +87,7 @@ export default function Navbar() {
         </Container>
       </header>
 
+      {/* Mobile bottom tab bar, hidden from `sm` up. */}
       <nav
         aria-label="Primary"
         className="fixed inset-x-0 bottom-0 z-20 flex h-14 border-t border-gray-200 bg-white sm:hidden"
