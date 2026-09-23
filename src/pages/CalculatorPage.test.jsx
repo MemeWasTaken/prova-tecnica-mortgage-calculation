@@ -138,6 +138,20 @@ describe('CalculatorPage saving', () => {
     expect(localStorage.getItem(HISTORY_KEY)).toBeNull();
   });
 
+  it('does not fail on purpose in a production build, even with amount 1 and rate 1', async () => {
+    mockViewportWidth(DESKTOP_WIDTH);
+    vi.stubEnv('DEV', false);
+    const user = userEvent.setup();
+    render(<CalculatorPage />);
+
+    await fillAndCalculate(user, { amount: '1', rate: '1' });
+    await user.click(screen.getByRole('button', { name: /save/i }));
+    vi.unstubAllEnvs();
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(HISTORY_KEY))).toHaveLength(1);
+  });
+
   it('does not trigger the demo error when only one of amount and rate is 1', async () => {
     mockViewportWidth(DESKTOP_WIDTH);
     const user = userEvent.setup();

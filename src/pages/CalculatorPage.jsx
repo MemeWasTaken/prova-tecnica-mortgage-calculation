@@ -64,14 +64,17 @@ export default function CalculatorPage() {
    * and persists it. Does nothing if there is no result yet.
    *
    * Throws if the simulation cannot be saved (e.g. the browser storage is full
-   * or blocked); `LoanForm` catches it and shows an error banner. For demo and
-   * testing purposes, a calculation matching `SIMULATED_SAVE_ERROR`
-   * (amount 1 and rate 1) fails on purpose to trigger that banner.
+   * or blocked); `LoanForm` catches it and shows an error banner. In
+   * development only (`npm run dev`), a calculation matching
+   * `SIMULATED_SAVE_ERROR` (amount 1 and rate 1) fails on purpose to trigger
+   * that banner. In a production build the trigger is disabled and stripped
+   * from the bundle.
    */
   const handleSave = () => {
     if (!result) return;
 
     if (
+      import.meta.env.DEV &&
       result.amount === SIMULATED_SAVE_ERROR.amount &&
       result.rate === SIMULATED_SAVE_ERROR.rate
     ) {
