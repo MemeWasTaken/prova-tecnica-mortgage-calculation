@@ -50,6 +50,7 @@ A responsive single-page application to estimate mortgage repayments, save simul
 - Result card with the estimated installment, total payment and total interest.
 - A warning is shown for variable-rate estimates, which are only indicative.
 - The result is cleared as soon as an input changes, so a stale result is never displayed.
+- If a calculation cannot be saved (e.g. the browser storage is full or blocked), a dismissible error banner is shown and the Save button stays available to retry.
 
 **History**
 
@@ -198,6 +199,12 @@ npm test
 
 The suite covers the calculation, formatting and storage utilities, the `useMediaQuery` hook, the form and result components, the history lists and comparison views, the modal, and both pages. Component tests use Testing Library and query the UI the way a user (or a screen reader) would, by role and accessible name. Viewport-dependent behavior is tested with a small `mockViewportWidth` helper (`src/test/viewport.js`) that fakes `window.matchMedia`.
 
+### Trying the save error banner
+
+A failing save is hard to reproduce by hand (it needs a full or blocked browser storage), so in development the failure can be triggered on purpose: with `npm run dev`, enter **loan amount `1`** and **annual interest rate `1`**, press Calculate and then Save. The error banner appears and the Save button stays available.
+
+The trigger (`SIMULATED_SAVE_ERROR` in `src/config/loanDefaults.js`) is guarded by `import.meta.env.DEV`: in a production build (`npm run build`, `npm run preview`) it is disabled and removed from the bundle, and those values save normally.
+
 ## Accessibility
 
 - Semantic structure: `main`, `header`, `nav`, `footer`, headings and real form controls.
@@ -212,6 +219,6 @@ The suite covers the calculation, formatting and storage utilities, the `useMedi
 - **Arrow-key navigation** is not implemented in the radio-style toggles (`ToggleGroup`, `SegmentedToggle`); they currently work with click and Tab/Enter/Space.
 - **Field naming:** history entries use `monthly` for the installment per period, which is only monthly when the frequency is monthly. Renaming it (e.g. `installment`) would require a storage migration.
 - **No input validation inside `calculateMortgage`:** it assumes the form already validated the values (a term or frequency of 0 would produce `Infinity`/`NaN`).
-- **Storage writes are not guarded:** unlike reads, writes to `localStorage` can throw if the storage is full or blocked.
+- **Storage write errors are only handled when saving a calculation.** Writes to `localStorage` can throw if the storage is full or blocked: the calculator shows an error banner, but deleting an entry, clearing the history and adding the dummy entries in the History page do not report the failure yet.
 - **Currency and locale are fixed** (euro, Italian number formatting); making them configurable would be a natural extension.
 - Possible next steps: Export of simulations (CSV/PDF), and end-to-end tests.
